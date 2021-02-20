@@ -1,0 +1,56 @@
+---
+# tasks file for ec2_instances
+
+  - name: launch an instance with public IP address.
+    ec2_instance:
+       name: "K8_master_node"
+       region: "ap-south-1"
+       image_id: "ami-08e0ca9924195beba"
+       instance_type: "t2.micro"
+       vpc_subnet_id: "subnet-b33846ff"
+       security_group: "sg-0a02bac9d0608212b"
+       key_name: "mumbaikey"
+       state: present
+       aws_access_key: "{{ aws_access_key }}"
+       aws_secret_key: "{{ aws_secret_key }}"
+    register: x
+
+  - name: launching 2nd instance with public IP address
+    ec2_instance:
+       name: "k8_WN__1"
+       region: "ap-south-1"
+       image_id: "ami-08e0ca9924195beba"
+       instance_type: "t2.micro"
+       vpc_subnet_id: "subnet-b33846ff"
+       security_group: "sg-0a02bac9d0608212b"
+       key_name: "mumbaikey"
+       state: present
+       aws_access_key: "{{ aws_access_key }}"
+       aws_secret_key: "{{ aws_secret_key }}"
+    register: y
+
+  - name: launching 3rd instance with public IP address
+    ec2_instance:
+       name: "k8_WN__2"
+       region: "ap-south-1"
+       image_id: "ami-08e0ca9924195beba"
+       instance_type: "t2.micro"
+       vpc_subnet_id: "subnet-b33846ff"
+       security_group: "sg-0a02bac9d0608212b"
+       key_name: "mumbaikey"
+       state: present
+       aws_access_key: "{{ aws_access_key }}"
+       aws_secret_key: "{{ aws_secret_key }}"
+    register: z
+
+
+  - name: Dynamically adding instance ip into inventory.
+    blockinfile:
+        path: /root/k8_cluster_ansible/inventory.txt
+        create: yes
+        block: |
+               [k8_master_node] 
+               {{ x.instances[0].public_ip_address }}  ansible_ssh_user=ec2-user  ansible_ssh_private_key_file=/root/yourkey.pem ansible_become=yes
+               [k8_worker_nodes]
+               {{ y.instances[0].public_ip_address }}  ansible_ssh_user=ec2-user  ansible_ssh_private_key_file=/root/yourkey.pem ansible_become=yes
+               {{ z.instances[0].public_ip_address }}  ansible_ssh_user=ec2-user  ansible_ssh_private_key_file=/root/yourkey.pem ansible_become=yes

@@ -1,0 +1,5 @@
+# BEGIN ANSIBLE MANAGED BLOCK
+join_command: kubeadm join 172.31.13.27:6443 --token 3dg23r.acf28xkqzmamef88     --discovery-token-ca-cert-hash sha256:3857a641cecdd82cafb950ea264532d60713c3e0d5326b5bce5964de  #storing command that will help workernodes to join the cluster.
+# END ANSIBLE MANAGED BLOCK
+
+# JOIN COMMAND WILL BE DYNAMICALLY LOADED WHEN MASTER_NODE ROLE IS EXECUTED.

@@ -1,0 +1,88 @@
+---
+# tasks file for master_node
+
+  - name: "Configuring yum repository"
+    yum_repository:
+        name: kubernetes
+        description: kubernetes.repo
+        baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+        enabled: yes
+        gpgcheck: yes
+        repo_gpgcheck: yes
+        gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+        exclude: kubelet kubeadm kubectl
+
+  - name: "Installing required Softwares:Docker,kubadm,kubectl,kubelet,iproute-tc"
+    yum:
+        name: "{{ item }}"
+        state: present
+        disable_excludes: kubernetes
+    loop:
+           - docker
+           - iproute-tc
+           - kubeadm
+
+  - name: Starting Docker and Kubelet services
+    service:
+        name: "{{ item  }}"
+        state: started
+        enabled: yes
+    loop:
+        - docker
+        - kubelet
+  - name: kubeadm image pull
+    command: "kubeadm config images pull"
+
+  - name: Updating default drivers.
+    copy:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+
+  - name: Restarting docker services
+    service:
+        name: docker
+        state: restarted
+  - name: Updating k8s config file.
+    copy:
+      dest: /etc/sysctl.d/k8s.conf
+      src: k8s.conf
+
+  - name: Modifing kernel parameters
+    command: "sysctl --system"
+
+
+  - name: Initialising the cluster.
+    command: "kubeadm init --pod-network-cidr={{ set_cidr }} --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem"
+
+  - name: creating .kube directory
+    file:
+        path: $HOME/.kube
+        state: directory
+
+  - name: Copying files to .kube directory.
+    shell: "cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+
+  - name: Changing ownership of above file.
+    shell: "chown $(id -u):$(id -g) $HOME/.kube/config"
+
+  - name: Flannel application
+    shell: "kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml"
+
+  - name: Store join command
+    shell: "kubeadm token create  --print-join-command"
+    register: print_command
+
+  - name: Creating join_command.yml file which will store Join command.
+    blockinfile:
+           path: /root/join_command.yml
+           create: yes
+           block: |
+                  join_command: {{ print_command.stdout }}
+           
+
+  - name: Copy above file from remote to local system.
+    fetch:
+           src: /root/join_command.yml
+           dest: worker_node/vars/main.yml
+           flat: yes
+

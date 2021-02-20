@@ -1,0 +1,5 @@
+- hosts: k8_master_node
+  roles:
+        - master_node
+
+

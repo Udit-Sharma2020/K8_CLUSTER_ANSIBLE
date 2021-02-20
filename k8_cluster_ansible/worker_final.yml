@@ -1,0 +1,5 @@
+- hosts: k8_worker_nodes
+  roles: 
+        
+        - worker_node
+      
