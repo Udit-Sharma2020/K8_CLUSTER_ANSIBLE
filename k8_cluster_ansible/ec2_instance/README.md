@@ -1,38 +1,31 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+- Ec2_instance
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- You should have an IAM user created over your AWS account.Download the AWS credentials as these are important for execution of this role  
 
 Role Variables
 --------------
+    In vars/main.yml u must provide your AWS-CREDENTIALS.
+           aws_access_key: <access_key>
+           aws_secret_key: <secret_key>
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-Dependencies
+Security 
 ------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
+    To secure your sensitivedata ie:AWS-credentials , it is adviced to encypt vars/main.yml of this role
+     use command:
+                    ansible-vault encrypt ec2_instance/vars/main.yml
+    
+To execute Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+    Including an example of how to use your role (with variables passed in encrypted form):
+         Use command:
+                    ansible-playbook --ask-vault-password ec2_final.yml
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
 
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
