@@ -1,0 +1,4 @@
+- hosts: k8_master_node
+  roles:
+        - multi_tier
+
