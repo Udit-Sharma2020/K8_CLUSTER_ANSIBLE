@@ -2,7 +2,7 @@
 
   # INTEGRATING AMAZON-WEB-SERVICES, KUBERNETES and ANSIBLE.
 
-## This repo contains three ansile roles
+## This repo contains three ansible roles
 ### 1. ec2_instance.
 ### 2. master_node.
 ### 3. worker_node.
