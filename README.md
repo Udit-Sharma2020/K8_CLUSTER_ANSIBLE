@@ -6,6 +6,7 @@
 ### 1. ec2_instance.
 ### 2. master_node.
 ### 3. worker_node.
+### 4. multi_tier. 
 
 ## PRE-REQUISITES 
     language: python
