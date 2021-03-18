@@ -14,7 +14,8 @@
 ### 3. worker_final.yml
   - This playbook will configure k8s workernodes and will join the above cluster.
         
-
+### 4. mtapp_final.yml
+  - This playbook will configure Multi-tier setup.This will launch a  pod with wordpress application and connect it to another pod containing mysql database.
 
 Example Playbook Execution Command
 ----------------
