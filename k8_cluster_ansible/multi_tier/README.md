@@ -16,6 +16,7 @@ Requirements
 
 # Login to mysql database from master node.
    **Run these command over master_node.**
+ 
     kubectl get pods
     kubectl exec -it <mysql container pod id> -- bash
     
